@@ -7,15 +7,15 @@ services:
     container_name: frontend-dev
     command: npm start
     ports:
-      - "80:8080"
+      - "8080:8080"  # Expose 8080 on localhost to get hot reloading to work. let it be for now
     volumes:
       - ./frontend:/home/app/frontend
       - /home/app/frontend/node_modules     # copies folder in IMAGE and binds it to container
     depends_on:
       - directus
-  db:
+  mysql:
     image: mysql:5.5
-    container_name: db
+    container_name: mysql
     restart: always
     env_file:
       - ./config/mysql.env
@@ -25,7 +25,7 @@ services:
       - ./mysql/.data:/var/lib/mysql
   directus:
     depends_on:
-      - db
+      - mysql
     image: getdirectus/directus:6.4
     container_name: directus
     ports:
@@ -33,8 +33,9 @@ services:
     restart: always
     volumes:
       - ./directus/.data:/var/www/html/storage
+      - ./directus/config/configuration-dev.stub.php:/var/www/html/api/core/Directus/Util/Installation/stubs/configuration.stub
     env_file:
       - ./config/api.env
     environment:
-     - MYSQL_PORT_3306_TCP_ADDR=db
+     - MYSQL_PORT_3306_TCP_ADDR=mysql
      - MYSQL_PORT_3306_TCP_PORT=3306
