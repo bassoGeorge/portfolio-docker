@@ -11,3 +11,30 @@ services:
     volumes:
       - ./frontend:/home/app/frontend
       - /home/app/frontend/node_modules     # copies folder in IMAGE and binds it to container
+    depends_on:
+      - directus
+  db:
+    image: mysql:5.5
+    container_name: db
+    restart: always
+    env_file:
+      - ./config/mysql.env
+    ports:
+      - "8886:3306"
+    volumes:
+      - ./mysql/.data:/var/lib/mysql
+  directus:
+    depends_on:
+      - db
+    image: getdirectus/directus:6.4
+    container_name: directus
+    ports:
+     - "8888:8080"
+    restart: always
+    volumes:
+      - ./directus/.data:/var/www/html/storage
+    env_file:
+      - ./config/api.env
+    environment:
+     - MYSQL_PORT_3306_TCP_ADDR=db
+     - MYSQL_PORT_3306_TCP_PORT=3306
