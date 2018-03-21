@@ -10,7 +10,7 @@ services:
       - "8080:8080"  # Expose 8080 on localhost to get hot reloading to work. let it be for now
     volumes:
       - ./frontend:/home/app/frontend
-      - /home/app/frontend/node_modules     # copies folder in IMAGE and binds it to container
+      # - /home/app/frontend/node_modules     # copies folder in IMAGE and binds it to container
     depends_on:
       - directus
   mysql:
