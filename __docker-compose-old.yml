@@ -13,20 +13,20 @@ services:
       # - /home/app/frontend/node_modules     # copies folder in IMAGE and binds it to container
     depends_on:
       - directus
-    networks:
-      - dockernet
-  # mysql:
-  #   image: mysql:5.5
-  #   container_name: my-porfolio-mysql
-  #   # restart: always
-  #   env_file:
-  #     # TODO
-  #     - ./config/mysql.env
-  #   ports:
-  #     - "8886:3306"
-  #   volumes:
-  #     - ./mysql/.data:/var/lib/mysql
+  mysql:
+    image: mysql:5.5
+    container_name: my-porfolio-mysql
+    # restart: always
+    env_file:
+      # TODO
+      - ./config/mysql.env
+    ports:
+      - "8886:3306"
+    volumes:
+      - ./mysql/.data:/var/lib/mysql
   directus:
+    depends_on:
+      - mysql
     image: getdirectus/directus:6.4
     container_name: my-porfolio-directus
     ports:
@@ -39,14 +39,5 @@ services:
       # TODO
       - ./config/api.env
     environment:
-      - MYSQL_PORT_3306_TCP_ADDR=mysql
-      - MYSQL_PORT_3306_TCP_PORT=3306
-    networks:
-      - dockernet
-
-networks:
-  dockernet:
-    external: true
-  # host:
-  #   external: true
-
+     - MYSQL_PORT_3306_TCP_ADDR=mysql
+     - MYSQL_PORT_3306_TCP_PORT=3306
