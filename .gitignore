@@ -2,3 +2,4 @@ frontend
 mysql/.data
 directus/.data
 config/*.env
+!config/vault_*.env
